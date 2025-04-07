@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FullHardcoreResetPlugin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FullHardcoreResetPlugin_jar</output-path>
+    <root id="archive" name="FullHardcoreResetPlugin.jar">
+      <element id="module-output" name="FullHardcoreResetPlugin" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Java/Spigot/spigot-api-1.21.5-R0.1-20250403.081143-19-shaded.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+    </root>
+  </artifact>
+</component>
