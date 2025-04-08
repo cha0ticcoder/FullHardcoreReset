@@ -1,0 +1,7 @@
+name: ExamplePlugin
+version: 0.0.0-dev20250408.1
+main: io.github.cha0ticcoder.fullhardcorereset.Main
+description: Automates a Full Hardcore Reset including Statistics and Achievements
+author: cha0ticcoder
+website: https://github.com/cha0ticcoder
+api-version: '1.21.4'

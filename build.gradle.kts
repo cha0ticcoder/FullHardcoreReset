@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "de.cha0ticcoder"
-version = "1.0-SNAPSHOT"
+version = ""
 
 repositories {
     maven {
