@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="fullhardcorereset:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/fullhardcorereset_jar</output-path>
+    <root id="archive" name="fullhardcorereset.jar">
+      <element id="module-output" name="fullhardcorereset.main" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/config.yml" />
+    </root>
+  </artifact>
+</component>
