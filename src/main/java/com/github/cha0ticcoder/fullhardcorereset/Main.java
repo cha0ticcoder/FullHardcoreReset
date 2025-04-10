@@ -1,6 +1,8 @@
 package com.github.cha0ticcoder.fullhardcorereset;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -11,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.Listener;
-import org.json.simple.parser.JSONParser;
+import org.shanerx.mojang.Mojang;
 
 import java.lang.Override;
 import java.util.Map;
@@ -22,6 +24,8 @@ import java.util.UUID;
 public class Main extends JavaPlugin implements Listener {
 
     private Map<String, ?> config;
+
+    private final Mojang mojangAPI = new Mojang().connect();
 
     public enum PlayerResetType {
         ACHIEVEMENTS,
@@ -41,7 +45,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
 
         LiteralCommandNode<CommandSourceStack> resetCommand = Commands.literal("reset")
-                .then(Commands.literal("achievements")
+                .then(Commands.literal("advancements")
                         .executes( context -> {
 
                             if (!resetAdvancements(null)) {
@@ -61,18 +65,6 @@ public class Main extends JavaPlugin implements Listener {
                             return Command.SINGLE_SUCCESS;
                         })
                 )
-                .then(Commands.argument("target", ArgumentTypes.player())
-                        .executes(context -> {
-                            final PlayerSelectorArgumentResolver targetResolver = context.getArgument("target", PlayerSelectorArgumentResolver.class);
-                            final Player target = targetResolver.resolve(context.getSource()).getFirst();
-
-                            if (!resetPlayer(target, null)) {
-                                return 0;
-                            }
-
-                            return Command.SINGLE_SUCCESS;
-                        })
-                )
                 .then(Commands.literal("world")
                         .executes(context -> {
 
@@ -83,6 +75,30 @@ public class Main extends JavaPlugin implements Listener {
                             return Command.SINGLE_SUCCESS;
                         })
                 )
+                .then(Commands.argument("onlinePlayer", ArgumentTypes.player())
+                        .executes(context -> {
+                            final PlayerSelectorArgumentResolver targetResolver = context.getArgument("onlinePlayer", PlayerSelectorArgumentResolver.class);
+                            final Player onlinePlayer = targetResolver.resolve(context.getSource()).getFirst();
+
+                            if (!resetPlayer(onlinePlayer, null)) {
+                                return 0;
+                            }
+
+                            return Command.SINGLE_SUCCESS;
+                        })
+                )
+                .then(Commands.argument("offlinePlayer", StringArgumentType.word()))
+                        .executes( context -> {
+                            final String offlinePlayerUsername = context.getArgument("offlinePlayer", String.class);
+
+                            Player offlinePlayer = getPlayerByUsername(offlinePlayerUsername);
+
+                            if (!resetPlayer(offlinePlayer, null)) {
+                                return 0;
+                            }
+
+                            return Command.SINGLE_SUCCESS;
+                        })
                 .build();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
@@ -121,15 +137,15 @@ public class Main extends JavaPlugin implements Listener {
 
         UUID targetUUID = target.getUniqueId();
 
+        boolean targetIsOnline = target.isOnline();
+
         target.getWorld().getWorldFolder();
 
-        if (target.isOnline()) {
+        if (targetIsOnline) {
 
 
 
-        } else if (!target.isOnline()) {
-
-
+        } else if (!targetIsOnline) {
 
 
 
@@ -146,6 +162,19 @@ public class Main extends JavaPlugin implements Listener {
 
     public boolean resetWorld() {
         return false;
+    }
+
+    public Player getPlayerByUsername(String username) {
+
+        Player target = null;
+
+        try {
+            target = Bukkit.getPlayer(UUID.fromString(mojangAPI.getUUIDOfUsername(username)));
+        } catch (Exception e) {
+            this.getLogger().severe("API Request to Mojang failed: \n" + e.getMessage());
+        }
+
+        return target;
     }
 
 }
